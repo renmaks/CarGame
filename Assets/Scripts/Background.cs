@@ -1,25 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Background : MonoBehaviour
 {
-    [Header("Set in Inspector")]
-    public float speed;
+    [Header("Для редактирования")]
+    [SerializeField] private float _speed;
 
-    Vector3 startPosition;
+    private Vector3 _startPosition;
 
     void Start()
     {
-        startPosition = transform.position;
+        _startPosition = transform.position;
     }
 
     void Update()
     {
-        if (Game.bG)
+        if (Game.BG)
         {
-            float offset = Mathf.Repeat(Time.time * speed, 6);
-            transform.position = startPosition + new Vector3(0, -offset, 0);
+            float offset = Mathf.Repeat(Time.time * _speed, 6);
+            transform.position = _startPosition + new Vector3(0, -offset, 0);
         }
     }
 }

@@ -1,108 +1,108 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class CarMove : MonoBehaviour
 {
-    public float speed = 5f;
-    Rigidbody2D rb;
+    static public float FUEL = 100;
 
-    static public float fuel = 100;
+    [SerializeField] private GameObject _trails;
 
-    float fuelConsumption = 1f;
-    float fuelSpeed = 1f;
-    Text t;
-    bool gameEnd = false;
-    float stopTime = 0f;
-    public GameObject trails;
-    public bool brake = false;
-    public bool trailSpawned = false;
-   
-    void Start()
+    private float _speed = 1.5f;
+    private Rigidbody2D _rb;
+    private readonly float _fuelConsumption = 1f;
+    private float _fuelSpeed = 1f;
+    private Text _fuelText;
+    private bool _gameEnd = false;
+    private float _stopTime = 0f;
+    private bool _brake = false;
+    private bool _trailSpawned = false;
+    
+    private void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        t = GameObject.FindWithTag("txt").GetComponent<Text>();
+        _rb = GetComponent<Rigidbody2D>();
+        _fuelText = GameObject.FindWithTag("txt").GetComponent<Text>();
     }
 
-    void Update()
+    private void Move()
     {
         float xAxis = Input.GetAxis("Horizontal");
-        rb.velocity = new Vector2(xAxis * speed, rb.velocity.y);
+        _rb.velocity = new Vector2(xAxis * _speed, _rb.velocity.y);
         float yAxis = Input.GetAxis("Vertical");
-        rb.velocity = new Vector2(rb.velocity.x, yAxis * speed);
+        _rb.velocity = new Vector2(_rb.velocity.x, yAxis * _speed);
+    }
 
-        if (rb.velocity.y > 0 || rb.velocity.y < 0 || rb.velocity.x < 0 || rb.velocity.x > 0)
+    private void ChangeFuel()
+    {
+        if (_rb.velocity.y > 0 || _rb.velocity.y < 0 || _rb.velocity.x < 0 || _rb.velocity.x > 0)
         {
-            if (Time.time > fuelSpeed)
+            if (Time.time > _fuelSpeed)
             {
-                fuelSpeed = Time.time + fuelConsumption;
-                fuel -= 3;
-                if (fuel <= 0)
+                _fuelSpeed = Time.time + _fuelConsumption;
+                FUEL -= 3;
+                if (FUEL <= 0)
                 {
-                    fuel = 0;
+                    FUEL = 0;
                     Time.timeScale = 0;
-                    t.text = "Fuel is empty! Space to restart";
-                    gameEnd = true;
+                    _fuelText.text = "Fuel is empty! Space to restart";
+                    _gameEnd = true;
                 }
             }
         }
+    }
 
-        if (gameEnd == true && Input.GetButtonDown("Jump"))
+    private void Restart()
+    {
+        SceneManager.LoadScene(0);
+        _gameEnd = false;
+        Time.timeScale = 1;
+        FUEL = 100;
+    }
+
+    private void Update()
+    {
+        Move();
+        ChangeFuel();
+
+        if (_gameEnd == true && Input.GetButtonDown("Jump"))
         {
-           SceneManager.LoadScene(0);
-            gameEnd = false;
-            Time.timeScale = 1;
-            fuel = 100;
+            Restart();
         }
 
         if (Input.GetKeyDown(KeyCode.S))
         {
-            brake = true;
-            
-        //    if (stopTime >= 2 && stopTime < 3)
-        //    {
-        //        speed = 1f;
-        //        TrailsSpawn();
-        //        Invoke("TrailsDestroy", 4f);
-        //    }
-        //}
-        //else
-        //{
-        //    speed = 2.5f;
-        //    stopTime = 0;
+            _brake = true;
         }
 
         if (Input.GetKeyUp(KeyCode.S))
         {
-            brake = false;
-            speed = 1.5f;
-            stopTime = 0;
+            _brake = false;
+            _speed = 1.5f;
+            _stopTime = 0;
         }
 
-        if (brake)
+        if (_brake)
         {
-            stopTime += Time.deltaTime;
-            if (stopTime >= 2 && trailSpawned == false)
+            _stopTime += Time.deltaTime;
+            if (_stopTime >= 2 && _trailSpawned == false)
             {
-                speed = 0.5f;
+                _speed = 0.5f;
                 TrailsSpawn();
-                Invoke("TrailsDestroy", 4f);
+                Invoke(nameof(TrailsDestroy), 4f);
             }
         }
     }
 
     void TrailsSpawn()
     {
-        Instantiate(trails, this.transform.position, Quaternion.identity, transform);
-        trailSpawned = true;
+        Instantiate(_trails, this.transform.position, Quaternion.identity, transform);
+        _trailSpawned = true;
     }
 
     void TrailsDestroy()
     {
         Destroy(GameObject.FindGameObjectWithTag("trail"));
-        trailSpawned = false;
+        _trailSpawned = false;
     }
 
 }

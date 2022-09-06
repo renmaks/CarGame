@@ -1,62 +1,57 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Game : MonoBehaviour
 {
-    public bool spaceActivated = false;
-    public Text startTxt;
-    public GameObject car;
-    bool enableTimer = false;
-    public GameObject speedometer;
-    public float timer = 0;
-    static public bool bG = false;
+    [SerializeField] private Text _startTxt;
+    [SerializeField] private GameObject _car;
+    [SerializeField] private GameObject _speedometer;
 
-    void Awake()
-    {
-  
-    }
+    static public bool BG = false;
 
-    void Update()
+    private bool _spaceActivated = false;
+    private bool _enableTimer = false;
+    private float _timer = 0;
+
+    private void Update()
     {
-        if (Input.GetButtonDown("Jump") && spaceActivated == false)
+        if (Input.GetButtonDown("Jump") && _spaceActivated == false)
         {
-            spaceActivated = true;
-            enableTimer = true;
+            _spaceActivated = true;
+            _enableTimer = true;
         }
 
-        if (enableTimer)
+        if (_enableTimer)
         {
-            timer += Time.deltaTime;
-            if (timer <= 3.5f)
+            _timer += Time.deltaTime;
+            if (_timer <= 3.5f)
             {
-                if (Mathf.Round(timer) == 0)
-                    startTxt.text = "...3";
-                else if (Mathf.Round(timer) == 1)
-                    startTxt.text = "...2";
-                else if (Mathf.Round(timer) == 2)
-                    startTxt.text = "...1";
-                else if (Mathf.Round(timer) == 3)
+                if (Mathf.Round(_timer) == 0)
+                    _startTxt.text = "...3";
+                else if (Mathf.Round(_timer) == 1)
+                    _startTxt.text = "...2";
+                else if (Mathf.Round(_timer) == 2)
+                    _startTxt.text = "...1";
+                else if (Mathf.Round(_timer) == 3)
                 {
-                    startTxt.text = "Start!";
+                    _startTxt.text = "Start!";
                 }
 
             }
             else
             {
-                enableTimer = false;
-                startTxt.text = "";
+                _enableTimer = false;
+                _startTxt.text = "";
                 GameStart();
             }
         }
     }
 
-    public void GameStart()
+    private void GameStart()
     {
-        bG = true;
-        Instantiate(car, new Vector3(0, -2, 0), Quaternion.identity);
-        speedometer.SetActive(true);
+        BG = true;
+        Instantiate(_car, new Vector3(0, -2, 0), Quaternion.identity);
+        _speedometer.SetActive(true);
     }
 
 }

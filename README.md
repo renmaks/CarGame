@@ -3,3 +3,6 @@
 Для начала игры нужно нажать пробел. Для управления машинкой используются WASD. Для рестарта нужно также нажать пробел.
 
 Поиграть можно здесь: https://play.unity.com/mg/other/webgl-builds-242747
+
+
+![Screenshot 2022-10-30 010851](https://user-images.githubusercontent.com/77145089/198850722-43e2f5d4-dcaa-4275-8268-0f8d059460fa.png)
